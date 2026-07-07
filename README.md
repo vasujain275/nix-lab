@@ -98,15 +98,18 @@ sudo nix --extra-experimental-features "nix-command flakes" \
 ### Step 4 — Move repo and generate hardware config
 
 ```bash
-# Now the SSD is mounted at /mnt — move the repo there
-mv /tmp/nix-lab /mnt/etc/nixos/nix-lab
+# Create the nixos config directory on the new root
+sudo mkdir -p /mnt/etc/nixos
+
+# Move the repo there
+sudo mv /tmp/nix-lab /mnt/etc/nixos/nix-lab
 
 # Generate hardware config (detects CPU modules, filesystems, etc.)
 cd /mnt/etc/nixos/nix-lab
 sudo nixos-generate-config --root /mnt
 
 # Copy the generated hardware config into the repo and commit later
-cp /mnt/etc/nixos/hardware-configuration.nix ./hardware-configuration.nix
+sudo cp /mnt/etc/nixos/hardware-configuration.nix ./hardware-configuration.nix
 ```
 
 This creates:
