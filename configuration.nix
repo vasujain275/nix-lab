@@ -20,10 +20,9 @@
     # WiFi password lives in /etc/secrets/wireless.env
     # which is NOT in the Nix store (world-readable)
     # Format of that file: password=YOUR_ACTUAL_PASSWORD
-    environmentFile = "/etc/secrets/wireless.env";
+    secretsFile = "/etc/secrets/wireless.env";
     networks."VJ-Wifi-2.4G" = {
-      # @password@ is substituted from environmentFile at build time
-      psk = "@password@";
+      pskRaw = "ext:password";
     };
   };
 
