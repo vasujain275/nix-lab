@@ -2,7 +2,7 @@
 #
 # Usage (on the NixOS live ISO after connecting to WiFi):
 #   lsblk                                          # check your disk name
-#   nix --extra-experimental-features "nix-command flakes" run \
+#   sudo nix --extra-experimental-features "nix-command flakes" run \
 #     github:nix-community/disko -- --mode disko ./disk-config.nix
 #
 # This partitions, formats, mounts everything to /mnt, and creates swap.

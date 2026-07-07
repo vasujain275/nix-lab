@@ -81,8 +81,8 @@ lsblk
 # edit disk-config.nix before running disko:
 #   nano disk-config.nix  → change "/dev/sda" to "/dev/nvme0n1"
 
-# Run disko — this partitions, formats, mounts to /mnt, and creates a 4GB swapfile
-nix --extra-experimental-features "nix-command flakes" \
+# Run disko — this partitions, formats, mounts to /mnt, and creates a 4GB swap partition
+sudo nix --extra-experimental-features "nix-command flakes" \
   run github:nix-community/disko -- --mode disko ./disk-config.nix
 ```
 
@@ -103,7 +103,7 @@ mv /tmp/nix-lab /mnt/etc/nixos/nix-lab
 
 # Generate hardware config (detects CPU modules, filesystems, etc.)
 cd /mnt/etc/nixos/nix-lab
-nixos-generate-config --root /mnt
+sudo nixos-generate-config --root /mnt
 
 # Copy the generated hardware config into the repo and commit later
 cp /mnt/etc/nixos/hardware-configuration.nix ./hardware-configuration.nix
@@ -284,7 +284,7 @@ Or pick a specific generation at boot from the systemd-boot menu (last 5 kept).
 
 ```bash
 cd /etc/nixos/nix-lab
-nix flake update
+nix --extra-experimental-features "nix-command flakes" flake update
 sudo nixos-rebuild switch --flake .#nix-lab
 ```
 
