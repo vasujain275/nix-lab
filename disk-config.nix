@@ -2,7 +2,8 @@
 #
 # Usage (on the NixOS live ISO after connecting to WiFi):
 #   lsblk                                          # check your disk name
-#   nix run github:nix-community/disko -- --mode disko ./disk-config.nix
+#   nix --extra-experimental-features "nix-command flakes" run \
+#     github:nix-community/disko -- --mode disko ./disk-config.nix
 #
 # This partitions, formats, mounts everything to /mnt, and creates swap.
 # Then run: nixos-generate-config --root /mnt
@@ -24,15 +25,20 @@
             mountOptions = [ "fmask=0077" "dmask=0077" ];
           };
         };
+        swap = {
+          size = "4G";
+          content = {
+            type = "swap";
+            discard = true;
+            randomEncryption = true;
+          };
+        };
         root = {
           size = "100%";
           content = {
             type = "filesystem";
             format = "ext4";
             mountpoint = "/";
-            swapfile = {
-              size = "4G";
-            };
           };
         };
       };

@@ -108,10 +108,7 @@
     options = [ "defaults" "nofail" "x-systemd.device-timeout=10" ];
   };
 
-  # ============================================================
-  # SWAP — 4GB swapfile created by disko during install
-  # ============================================================
-  swapDevices = [{ device = "/swapfile"; }];
+
 
   # ============================================================
   # FIREWALL

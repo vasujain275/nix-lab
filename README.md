@@ -36,50 +36,31 @@
 
 ---
 
-### Step 1 — Flash NixOS ISO
+### Step 1 — Flash NixOS ISO (graphical)
 
 On your Arch desktop:
 
 ```bash
-# Download NixOS 24.11 minimal ISO from https://nixos.org/download
-# Select: NixOS -> Minimal ISO -> x86_64-linux
+# Download NixOS 24.11 graphical ISO from https://nixos.org/download
+# Select: NixOS -> Graphical ISO -> x86_64-linux
 
 # Flash to USB (replace sdX with your USB drive — check with lsblk first)
-sudo dd if=nixos-minimal-24.11-x86_64-linux.iso of=/dev/sdX bs=4M status=progress conv=fsync
+sudo dd if=nixos-graphical-24.11-x86_64-linux.iso of=/dev/sdX bs=4M status=progress conv=fsync
 ```
 
 ---
 
-### Step 2 — Boot into NixOS Installer
+### Step 2 — Boot into the graphical installer
 
 - Plug USB into Dell Inspiron
 - Power on and spam **F12** to get boot menu
 - Select your USB drive
-- Wait for shell prompt
+- Once the desktop loads (Plasma), **connect to WiFi** through the network manager in the system tray
+- Open **Konsole** (terminal)
 
 ---
 
-### Step 3 — Connect to WiFi in live environment
-
-```bash
-# Start wpa_supplicant temporarily
-sudo systemctl start wpa_supplicant
-
-# Connect to your WiFi
-wpa_cli
-> add_network
-> set_network 0 ssid "VJ-Wifi-2.4G"
-> set_network 0 psk "YOUR_PASSWORD"
-> enable_network 0
-> quit
-
-# Verify you have internet
-ping -c 3 1.1.1.1
-```
-
----
-
-### Step 4 — Clone the repo and run disko
+### Step 3 — Clone the repo and run disko
 
 **disko** is a declarative partitioning tool. Instead of typing fdisk commands
 manually, the disk layout is defined in [`disk-config.nix`](disk-config.nix) —
@@ -101,19 +82,20 @@ lsblk
 #   nano disk-config.nix  → change "/dev/sda" to "/dev/nvme0n1"
 
 # Run disko — this partitions, formats, mounts to /mnt, and creates a 4GB swapfile
-nix run github:nix-community/disko -- --mode disko ./disk-config.nix
+nix --extra-experimental-features "nix-command flakes" \
+  run github:nix-community/disko -- --mode disko ./disk-config.nix
 ```
 
 **What disko does for you (all in one command):**
 1. Creates GPT partition table on the SSD
 2. 512MB EFI partition (fat32, mounted at `/boot`)
-3. Rest of SSD as ext4 root (`/`)
-4. 4GB swapfile at `/swapfile`
+3. 4GB swap partition (encrypted with random key on each boot)
+4. Rest of SSD as ext4 root (`/`)
 5. Mounts everything to `/mnt`
 
 ---
 
-### Step 5 — Move repo and generate hardware config
+### Step 4 — Move repo and generate hardware config
 
 ```bash
 # Now the SSD is mounted at /mnt — move the repo there
@@ -132,7 +114,7 @@ This creates:
 
 ---
 
-### Step 6 — Create the WiFi secrets file
+### Step 5 — Create the WiFi secrets file
 
 This is the most important step for security. The WiFi password must NOT go in configuration.nix (it would end up world-readable in the Nix store).
 
@@ -162,7 +144,7 @@ sudo chmod 600 /mnt/etc/secrets/wireless.env
 
 ---
 
-### Step 7 — Check your gateway IP
+### Step 6 — Check your gateway IP
 
 The config defaults to `192.168.1.1` as the gateway. Verify this is correct for your router:
 
@@ -178,7 +160,7 @@ routes = [{ routeConfig.Gateway = "192.168.0.1"; }];  # ← change this
 
 ---
 
-### Step 8 — Install NixOS
+### Step 7 — Install NixOS
 
 ```bash
 sudo nixos-install --flake /mnt/etc/nixos/nix-lab#nix-lab
@@ -191,7 +173,7 @@ This will:
 
 ---
 
-### Step 9 — Set user password
+### Step 8 — Set user password
 
 Before rebooting, set the password for the `vasu` user:
 
@@ -204,7 +186,7 @@ exit
 
 ---
 
-### Step 10 — Reboot
+### Step 9 — Reboot
 
 ```bash
 sudo reboot
@@ -213,7 +195,7 @@ sudo reboot
 
 ---
 
-### Step 11 — SSH in from your Arch desktop
+### Step 10 — SSH in from your Arch desktop
 
 Wait about 30 seconds for boot, then:
 
@@ -225,7 +207,7 @@ If it connects — you're done with installation.
 
 ---
 
-### Step 12 — Set up Tailscale
+### Step 11 — Set up Tailscale
 
 ```bash
 sudo tailscale up
