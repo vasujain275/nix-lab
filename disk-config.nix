@@ -29,7 +29,7 @@
           size = "4G";
           content = {
             type = "swap";
-            discard = true;
+            discardPolicy = "both";
             randomEncryption = true;
           };
         };
