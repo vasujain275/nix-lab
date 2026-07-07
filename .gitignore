@@ -1,0 +1,22 @@
+# Nix build artifacts
+result
+result-*
+
+# pi agent config
+.pi/
+
+# Editor temp files
+*.swp
+*.swo
+*~
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# direnv cache (if used)
+.direnv/
+
+# Python bytecode (if any scripts)
+__pycache__/
+*.pyc
